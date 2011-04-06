@@ -1,0 +1,245 @@
+Kinetic Link 1.0.1, 2006-09-15
+Installation and Configuration Instructions
+
+TABLE OF CONTENTS
+=================
+1.Installation Notes
+2.Install Java and a Servlet Container
+3.Install the Required Remedy API Libraries
+4.Install Klink
+5.Verify Klink is Running
+6.Troubleshooting
+7.Configure Klink-Ars
+8.Document Changelog
+
+
+1. INSTALLATION NOTES
+=====================
+As of this writing, the development team has been successful in running
+Klink using Ars 60, Ars 63, and Ars 70 on both Tomcat and ServletExec.  We have
+found no issues with Tomcat, however ServletExec has two known issues.  First,
+this version of Klink will not run in a ServletExec instance which is being
+used to deploy Mid-tier (due to a non-shareable system library).  Second, the
+default configuration of IIS prevents BASIC http authentication from occuring.
+This causes problems with passing Ars credentials to the Klink framework but
+can easily be modified by the IIS manager.
+
+
+2. INSTALL A SERVLET CONTAINER
+==============================
+This guide focuses on Apache Tomcat (as this is the recommended servlet 
+container), however the installation and configuration steps should be easily
+applied to any other application capable of serving Java Servlets.
+
+2.1 OBTAIN JAVA AND APACHE TOMCAT
+Java can be downloaded directly form the sun web site at:
+http://developers.sun.com/resources/downloads.html  Java 1.4 or higher can be
+used, however we recommend the Java SE JDK 5.0 available at 
+http://java.sun.com/javase/downloads/index.jsp.
+
+Tomcat can be downloaded directly from the apache web site at: 
+http://tomcat.apache.org/.  As of the writing of this document the most recent
+version of Tomcat is 5.5.17 available here:
+http://tomcat.apache.org/download-55.cgi#5.5.17.  For easiest configuration we
+recommend the Core Windows executable.
+
+2.2 INSTALL JAVA
+Follow the instructions provided with your Java installation package.
+
+2.3 INSTALL TOMCAT
+Follow the instructures provided with your Tomcat installation package
+
+
+3.INSTALL THE REQUIRED REMEDY API LIBRARIES
+===========================================
+3.1 INSTALL REQUIRED JAVA LIBRARIES
+The following files are required by Klink-Ars and can be found on a machine with
+Remedy server installed.
+
+Copy the following jar file into your Tomcat lib folder located at:
+%Tomcat Root%\common\lib (where xx is the version of the Ars Api jar you will be
+using to install Klink on top of).
+
+FILE                LOCATIONS
+arapixx.jar         %AR System Root%\Arserver\Api\lib
+
+3.2 INSTALL REQUIRED SYSTEM LIBRARIES
+Additionally the following files must be put in a directory listed in your 
+java.library.path environment variable.  If you do not have a java.library.path
+environment variable, you can either create one and restart or temporarily
+skip this step and use the Klink "about" framework call to determine what
+directories are inherantly included in your java.library.path.
+
+If there are no Ars servers running Mid-Tier which you have access to then the
+following system libraries can be downloaded directly from the patches  remedy 
+supportweb site (http://supportweb.remedy.com) under the patches download.
+
+FILE                LOCATIONS
+arapixx.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+arjnixx.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+arrpcxx.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+arutlxx.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+
+(If you are installing from Ars 6.0 these files are required.)
+icudt32.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+icuin32.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+icuuc32.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+
+(If you are installing from Ars 6.3 these files are required.)
+icudt28l.dll        %AR System Root%\Mid-Tier\WEB-INF\lib
+icuin28.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+icuuc28.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+
+(If you are installing from Ars 6.0 these files are required.)
+icudt20.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+icuin20.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+icuuc20.dll         %AR System Root%\Mid-Tier\WEB-INF\lib
+
+
+4.INSTALL KLINK
+===============
+
+4.1 INSTALL KLINK TO TOMCAT
+Copy the klink.war file into your Tomcat webapps directory (located at
+%Tomcat Root%\webapps) and restart Tomcat.  This will unpack the klink
+war file and should produce a new klink directory in webapps.
+
+4.2 INSTALL KLINK TO SERVLETEXEC
+Copy the klink.war file into the default server folder in the webapps directory
+(located at %ServletExec Root%\webapps\default) and restart SERVLETEXEC.  This
+will unpack  the klink war file and should produce a new klink directory in 
+webapps.
+
+
+5.VERIFY KLINK IS RUNNING
+=========================
+Access http://<TomcatServer>:<ServerPort>/klink/about to verify that Klink is
+running and that all of the required libraries are present.  Present libraries
+will be listed as "Found" along with their versions and locations.  Missing 
+libraries will be listed as "Missing".  Please resolve these dependencies 
+before attempting any framework calls.
+
+Additional information and documentation is available at 
+http://<TomcatServer>:<ServerPort>/klink/ (notice the trailing slash, in the
+beta release we are having issues with correctly mapping pages from 
+http://<TomcatServer>:<ServerPort>/klink).
+
+
+6.TROUBLESHOOTING
+=================
+
+6.1 I CREATED THE JAVA.LIBRARY.PATH ENV VARIABLE, BUT THE LIBRARIES ARE MISSING
+The last thing displayed by the about framework call is a list of the paths
+currently in the java.library.path property.  Ensure the the directory you 
+specified is listed and that all of the system libraries are present is that
+directory.
+
+6.2 THE ABOVE DLL FILES ARE IN THE PATH, BUT THERE ARE MISSING DEPENDENCIES
+Depending on environment configuration and operating system, there may be more
+system libraries required.  If the about page does not explicetly state which
+system library is missing, Dependency Walker can be downloaded and used to
+open the problamatic dll.  The main window pane will list the dll depencencies
+currently unmet.
+
+6.3 THE WAR FILE IS NOT AUTOMATICALLY UNPACKING
+The development team has run into a few isolated cases in which the war file
+distributed does not automatically deploy in Tomcat.  We were unable to
+determine the root cause, however in both cases manually unpacking the files
+sucessfully deployed the Klink framework.  To manually unpack the distribution
+file, change the filename extension to .zip and use you favorite unzipper to 
+extract the files.  These files should be placed in a directory named "klink"
+within the webapps directory.
+
+6.4 SOMETHING ELSE IS GOING WRONG
+Please let us know by sending an e-mail to klink@kineticdata.com.  By gathering
+issues which our uses are facing during installation and configuration we will
+be able to more accurately asses the deployment process and produce easier
+methods for distribution.
+
+
+7.CONFIGURE KLINK-ARS
+=====================
+7.1 Configuring the Logger
+Klink uses log4j for all of its logging.  Logging by default is turned on,
+however it can easily be disabled by modifying the servlet configuration for
+the KlinkLogManager servlet (usually by editing the web.xml file).  Logging can
+be configured in one of two ways.  The first is toto specify a log4j 
+configuration file.  The second is to use one of the two standard logging 
+profiles provided.
+
+To turn on customized logging via a log4j configuration file add an
+initialization variable with a param-name of "log4j_configuration_file" and a
+param-value equal to the fully qualified path to the configuration file.  For
+more informaiton on how to use log4j configuration files please see the log4j 
+website at http://logging.apache.org/log4j/docs/.
+
+There are two standard profiles provided with the framework, DEBUG and STABLE.
+To use one of these preconfigured logging configurations add (or modify if you
+are using the default web.xml file) an initialization variable with a param-name
+of "profile_name" and a param-value of either "DEBUG" or "STABLE".  The DEBUG
+profile is extremely verbose (log statement, including level and location, down
+to the code-level) and logs to a file named "klink.log" in the WEB-INF\logs
+directory.  The STABLE profile logs to the same location but only includes less
+verbose log statments that indicate unexpected problems.
+
+If the "profile_name" parameter has a value other then "DEBUG" or "STABLE" 
+(including no value) it will default to the STABLE profile.  If both
+"profile_name" and "log4j_configuration_file" are included then the
+configuration file is applied after the profile.
+
+7.2 Enable Live Reloading of Logger Configuration
+In order to turn on the ability to do live reloading uncomment the /logconfig
+framework call from the struts-config.xml file.  This call is disabled by
+default due to security risks.
+
+7.3 Log4j Logging Levels
+Klink uses 5 different logging levels: DEBUG, INFO, WARN, ERROR, and FATAL.
+
+DEBUG - These messages are used for code level debugging and are written to
+target a user who is simultaneiously looking at the code.  In a typical
+situation this would oinly be turned on when unexplainable errors are
+occurring and the Klink Framework is suspect.  This level is extremely
+verbose and due to the performance deterioration should only be turned on
+and off as required.
+
+INFO - This level logs the logic and flow of the framework and is the
+suggested level to be used while application are being develped on top of
+Klink.
+
+WARN - This log level records all expected problems, errors, and exceptions
+(common issues the framework is prepared to deal with).  This would include 
+messages such as those thrown when invalid credentials are passed to the
+framework, there is a problem connected to the data server, invalid data is 
+passed or returned, or invalid framework parameters are detected.
+
+ERROR - This log level records all recoverable, unexpected problems, errors,
+and exceptions.  This level is the recommended level for stable Klink servers
+and only includeds messages such as communication timeouts, Xml parsing 
+exceptions, or unexpected issues or errors with the data server.
+
+FATAL - This log level records fatal exceptions and unrecoverable errors.  
+This would include any errors that occur while trying to handle a thrown 
+exception, problems with returning an error response, and any other 
+circumstances that prevent Klink from processing a request.
+
+
+8.DOCUMENT CHANGELOG
+====================
+Kinetic Link 1.0.1, 2006-09-15
+ -   (1) Added note on support of 7.0.
+ - (3.1) Generalized instructions now that 7.0 is supported.
+ - (3.2) Added .dll information for 7.0.
+
+Kinetic Link 1.0.0, 2006-08-25
+ -   (1) Clarified version compatibilities.
+ - (3.2) Modified .dll locations to be correct.
+ -   (6) Added section for troubleshooting.
+
+Kinetic Link 1.0.0b2, 2006-08-11
+ - (3.2) Clarified explaination of configuring path variables.
+ - (4.2) Added instructions for installing Klink-ARS to ServletExec.
+ - (5.2) Added instructions for verifying that the ARS dlls are present.
+ - (7.1) Updated instructions to reflect version changes.
+
+Kinetic Link 1.0.0b, 2006-07-13
+ - initial release

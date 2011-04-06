@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE struts-config PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN" "http://jakarta.apache.org/struts/dtds/struts-config_1_2.dtd">
+
+<struts-config>
+    <form-beans/>
+    <global-exceptions/>
+    <global-forwards/>
+
+    <action-mappings>
+        <!-- =========================== Log Controller =========================== -->
+        <!-- Uncomment this if you want the ability to do live reloading/reconfiguration of logging.
+             Please see the Installation and Configuration Guide for information on how to secure this call.
+        <action path="/logconfig" type="com.kd.klink.control.LogController" parameter="logconfig"/>
+        -->
+            
+        <!-- =========================== Meta Controller =========================== -->
+        <action path="/usercheck/*" type="com.kd.klink.ars.control.ArsMetaController" parameter="usercheck">
+            <set-property key="Datasource" value="{1}"/>
+        </action>
+        <action path="/configurations/*" type="com.kd.klink.ars.control.ArsMetaController" parameter="configurations">
+            <set-property key="Datasource" value="{1}"/>
+        </action>
+        <action path="/statistics/*" type="com.kd.klink.ars.control.ArsMetaController" parameter="statistics">
+            <set-property key="Datasource" value="{1}"/>
+        </action>
+        <action path="/permissions/*/*" type="com.kd.klink.ars.control.ArsMetaController" parameter="permissions">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+        </action>
+        <action path="/permissions/*/*/*" type="com.kd.klink.ars.control.ArsMetaController" parameter="permissions">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+            <set-property key="ItemIDs" value="{3}"/>
+        </action>
+        
+        <!-- =========================== Structure Controller =========================== -->
+        <action path="/structure/*/*" type="com.kd.klink.ars.control.ArsStructureController" parameter="structure">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+        </action>
+        <action path="/structures/*" type="com.kd.klink.ars.control.ArsStructureController" parameter="structures">
+            <set-property key="Datasource" value="{1}"/>
+        </action>
+
+        <!-- =========================== Data Controller =========================== -->
+        <action path="/attachment/*/*/*/*" type="com.kd.klink.ars.control.ArsDataController" parameter="attachment">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+            <set-property key="EntryID" value="{3}"/>
+            <set-property key="EntryItemID" value="{4}"/>
+        </action>
+        <action path="/entries/*/*" type="com.kd.klink.ars.control.ArsDataController" parameter="entries">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+        </action>
+        <action path="/entry/*/*/*" type="com.kd.klink.ars.control.ArsDataController" parameter="entry">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+            <set-property key="EntryID" value="{3}"/>
+        </action>
+        <action path="/create/*" type="com.kd.klink.ars.control.ArsDataController" parameter="create">
+            <set-property key="Datasource" value="{1}"/>
+        </action>
+        <action path="/create/*/*" type="com.kd.klink.ars.control.ArsDataController" parameter="create">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+        </action>
+        <action path="/delete/*/*/*" type="com.kd.klink.ars.control.ArsDataController" parameter="delete">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+            <set-property key="EntryID" value="{3}"/>
+        </action>
+        <action path="/update/*" type="com.kd.klink.ars.control.ArsDataController" parameter="update">
+            <set-property key="Datasource" value="{1}"/>
+        </action>
+        <action path="/update/*/*" type="com.kd.klink.ars.control.ArsDataController" parameter="update">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+        </action>
+        <action path="/update/*/*/*" type="com.kd.klink.ars.control.ArsDataController" parameter="update">
+            <set-property key="Datasource" value="{1}"/>
+            <set-property key="StructureID" value="{2}"/>
+            <set-property key="EntryID" value="{3}"/>
+        </action>
+    </action-mappings>
+</struts-config>
